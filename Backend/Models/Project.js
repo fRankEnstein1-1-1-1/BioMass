@@ -50,6 +50,7 @@ const projectSchema = new mongoose.Schema(
         },
 
 
+
         orthophotoUrl: {
             type: String
         },
@@ -57,6 +58,29 @@ const projectSchema = new mongoose.Schema(
         pointCloudUrl: {
             type: String
         },
+
+                availableAssets: {
+    type: [String],
+    default: []
+},
+
+        dsmPath: {
+    type: String
+},
+
+dtmPath: {
+    type: String
+},
+
+chmPath: {
+    type: String
+},
+
+    processingProgress: {
+    type: Number,
+    default: 0
+},
+
 
         biomassEstimate: {
             type: Number

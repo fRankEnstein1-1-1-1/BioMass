@@ -195,8 +195,108 @@ const createTask = async (projectId, imageFolderPath) => {
     }
 };
 
+const getTaskStatus = async (
+    projectId,
+    taskId
+) => {
+
+    try {
+
+        if (!token) {
+            await authenticateWebODM();
+        }
+
+        const response = await axios.get(
+
+            `${WEBODM_URL}/api/projects/${projectId}/tasks/${taskId}/`,
+
+            {
+                headers: {
+                    Authorization: `JWT ${token}`
+                }
+            }
+        );
+
+        return response.data;
+
+    } catch (error) {
+
+        console.log(
+            "Get Task Status Failed"
+        );
+
+        if (error.response) {
+            console.log(error.response.data);
+        } else {
+            console.log(error.message);
+        }
+
+        throw error;
+    }
+};
+
+const downloadAsset = async (
+    projectId,
+    taskId,
+    assetName,
+    savePath
+) => {
+
+    try {
+
+        if (!token) {
+            await authenticateWebODM();
+        }
+
+        const response = await axios({
+
+            method: "GET",
+
+            url:
+                `${WEBODM_URL}/api/projects/${projectId}/tasks/${taskId}/download/${assetName}`,
+
+            responseType: "stream",
+
+            headers: {
+                Authorization:
+                    `JWT ${token}`
+            }
+        });
+
+        const writer =
+            fs.createWriteStream(savePath);
+
+        response.data.pipe(writer);
+
+        return new Promise(
+            (resolve, reject) => {
+
+                writer.on(
+                    "finish",
+                    resolve
+                );
+
+                writer.on(
+                    "error",
+                    reject
+                );
+            }
+        );
+
+    } catch (error) {
+
+        console.log(
+            "Asset Download Failed"
+        );
+
+        throw error;
+    }
+};
+
 module.exports = {
     authenticateWebODM,
     createProject,
-    createTask
+    createTask,
+    getTaskStatus,
+    downloadAsset
 };

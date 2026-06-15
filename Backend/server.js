@@ -7,6 +7,9 @@ const { authenticateWebODM , createProject , createTask } = require("./services/
 const uploadRoutes = require("./Routes/uploadRoutes")
 const authRoutes = require("./Routes/auth")
 const projectRoutes = require("./Routes/projectRoutes")
+const {
+    getTaskStatus
+} = require("./services/WebodmServices");
 const app = express()
 app.use(cors())
 app.use(express.json())
@@ -15,5 +18,19 @@ app.use("/api",uploadRoutes);
 app.use("/api/auth",authRoutes);
 app.use("/api",projectRoutes)
 app.listen(5000,()=>{
-    console.log("server is running !")
+  
+//    (async () => {
+
+//     const result =
+//         await getTaskStatus(
+
+//             "39",
+
+//             "7236698d-77df-4e20-8549-dd06abb40160"
+//         );
+
+//     console.log(result);
+
+// })();
+console.log("Server is running !")
 })
