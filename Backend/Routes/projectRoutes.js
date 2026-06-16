@@ -4,7 +4,7 @@ const router = express.Router();
 
 const {
     createNewProject,
-    getProjectStatus,downloadProjectAssets , testGeoTiff,generateCHMController
+    getProjectStatus,downloadProjectAssets , testGeoTiff,generateCHMController,testCanopyArea , runEnvironmentalAnalysis
 } = require("../Controllers/projectController");
 
 
@@ -35,5 +35,14 @@ router.get(
     "/projects/:projectId/generate-chm",
     generateCHMController
 )
+router.get(
+    "/projects/:projectId/testcanopy",
+    testCanopyArea
+)
+
+router.post(
+    "/projects/:projectId/analyze",
+    runEnvironmentalAnalysis
+);
 
 module.exports = router;

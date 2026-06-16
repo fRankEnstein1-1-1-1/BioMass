@@ -20,6 +20,20 @@ const {
     "../services/geotiffService"
 );
 
+const {
+    estimateBiomass
+} = require("../services/biomassService");
+
+const {
+    estimateCarbon
+} = require("../services/carbonestimateService");
+
+
+const {
+    analyzeCanopyArea
+} = require(
+    "../services/canopyAnalysisSevice"
+);
 
 const createNewProject = async (req, res) => {
 
@@ -344,8 +358,7 @@ return res.json({
     }
 };
 
-const generateCHMController =
-async (req, res) => {
+const generateCHMController =async (req, res) => {
 
     try {
 
@@ -410,11 +423,187 @@ async (req, res) => {
     }
 };
 
+const testCanopyArea =
+async (req, res) => {
+
+    try {
+
+        const {
+            projectId
+        } = req.params;
+
+        const project =
+            await Project.findById(
+                projectId
+            );
+
+        if (!project) {
+
+            return res.status(404).json({
+
+                success: false,
+                message:
+                    "Project not found"
+            });
+        }
+
+        const chmResult =
+            await generateCHM(
+
+                project.dsmPath,
+
+                project.dtmPath
+            );
+
+        const canopyResult =
+            analyzeCanopyArea(
+                chmResult
+            );
+
+        return res.json({
+
+            success: true,
+
+            ...canopyResult
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        return res.status(500).json({
+
+            success: false,
+
+            message:
+                error.message
+        });
+    }
+};
+
+const runEnvironmentalAnalysis =
+async (req, res) => {
+
+    try {
+
+        const {
+            projectId
+        } = req.params;
+
+        const project =
+            await Project.findById(
+                projectId
+            );
+
+        if (!project) {
+
+            return res.status(404).json({
+
+                success: false,
+                message:
+                    "Project not found"
+            });
+        }
+
+        const chmResult =
+            await generateCHM(
+
+                project.dsmPath,
+
+                project.dtmPath
+            );
+
+        const canopyResult =
+            analyzeCanopyArea(
+                chmResult
+            );
+
+        const biomassResult =
+            estimateBiomass(
+
+                canopyResult.canopyArea,
+
+                canopyResult.meanVegetationHeight
+            );
+
+        const carbonResult =
+            estimateCarbon(
+
+                biomassResult
+                    .biomassEstimate
+            );
+
+        project.vegetationPixels =
+            canopyResult
+                .vegetationPixels;
+
+        project.canopyArea =
+            canopyResult
+                .canopyArea;
+
+        project.canopyPercentage =
+            canopyResult
+                .canopyPercentage;
+
+        project.meanHeight =
+            canopyResult
+                .meanVegetationHeight;
+
+        project.maxHeight =
+            canopyResult
+                .maxVegetationHeight;
+
+        project.biomassEstimate =
+            biomassResult
+                .biomassEstimate;
+
+        project.carbonEstimate =
+            carbonResult
+                .carbonEstimate;
+
+        await project.save();
+
+        return res.json({
+
+            success: true,
+
+            canopyArea:
+                canopyResult
+                    .canopyArea,
+
+            meanHeight:
+                canopyResult
+                    .meanVegetationHeight,
+
+            biomassEstimate:
+                biomassResult
+                    .biomassEstimate,
+
+            carbonEstimate:
+                carbonResult
+                    .carbonEstimate
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        return res.status(500).json({
+
+            success: false,
+
+            message:
+                error.message
+        });
+    }
+};
 
 module.exports = {
     createNewProject,
     getProjectStatus,
     downloadProjectAssets,
     testGeoTiff,
-    generateCHMController
+    generateCHMController,
+    testCanopyArea,
+    runEnvironmentalAnalysis
 };

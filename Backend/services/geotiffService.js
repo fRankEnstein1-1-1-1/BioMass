@@ -270,20 +270,37 @@ console.log(
 
     return {
 
-        width: dsm.width,
-        height: dsm.height,
+    width,
 
-        validPixels,
+    height,
 
-        minHeight,
+    validPixels,
 
-        maxHeight,
+    minHeight,
 
-        meanHeight,
+    maxHeight,
 
-        chm
-        
-    };
+    meanHeight,
+
+    chm,
+
+    noDataValue: -9999,
+
+    metadata: {
+
+        pixelWidth:
+            dsm.metadata.pixelWidth,
+
+        pixelHeight:
+            dsm.metadata.pixelHeight,
+
+        resolution:
+            dsm.metadata.resolution,
+
+        boundingBox:
+            dsm.metadata.boundingBox
+    }
+};
 };
 
 module.exports = {

@@ -76,19 +76,43 @@ chmPath: {
     type: String
 },
 
-    processingProgress: {
+   vegetationPixels: {
     type: Number,
     default: 0
 },
 
+canopyArea: {
+    type: Number,
+    default: 0
+},
 
-        biomassEstimate: {
-            type: Number
-        },
+canopyPercentage: {
+    type: Number,
+    default: 0
+},
 
-        carbonEstimate: {
-            type: Number
-        }
+meanHeight: {
+    type: Number,
+    default: 0
+},
+
+maxHeight: {
+    type: Number,
+    default: 0
+},
+
+processingProgress: {
+    type: Number,
+    default: 0
+},
+
+biomassEstimate: {
+    type: Number
+},
+
+carbonEstimate: {
+    type: Number
+}
     },
 
     {
