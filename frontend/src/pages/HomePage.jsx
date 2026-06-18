@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Navbar from '../components/Navbar';
 import UploadSection from '../components/UploadSection';
+import ProjectList from '../components/ProjectList';
 import { FolderOpen, PlusCircle } from 'lucide-react';
 
 const VIEW = {
@@ -56,12 +57,7 @@ function HomePage({ user, onLogout }) {
         <div className="w-full max-w-4xl">
           {activeView === VIEW.UPLOAD && <UploadSection user={user} />}
           
-          {activeView === VIEW.PROJECTS && (
-            <div className="glass-card rounded-3xl p-16 text-center">
-              <FolderOpen size={48} className="mx-auto mb-6 text-slate-600" />
-              <p className="text-slate-400 text-lg">Your previous projects will appear here soon.</p>
-            </div>
-          )}
+          {activeView === VIEW.PROJECTS && <ProjectList user={user} />}
         </div>
       </main>
     </div>

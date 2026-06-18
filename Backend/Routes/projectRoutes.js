@@ -4,7 +4,7 @@ const router = express.Router();
 
 const {
     createNewProject,
-    getProjectStatus,downloadProjectAssets , testGeoTiff,generateCHMController,testCanopyArea , runEnvironmentalAnalysis
+    getProjectStatus,downloadProjectAssets , testGeoTiff,generateCHMController,testCanopyArea , runEnvironmentalAnalysis, getProjectsByUser, deleteProject
 } = require("../Controllers/projectController");
 
 
@@ -43,6 +43,16 @@ router.get(
 router.post(
     "/projects/:projectId/analyze",
     runEnvironmentalAnalysis
+);
+
+router.get(
+    "/projects/user/:userId",
+    getProjectsByUser
+);
+
+router.delete(
+    "/projects/:projectId",
+    deleteProject
 );
 
 module.exports = router;

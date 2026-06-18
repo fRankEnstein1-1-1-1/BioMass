@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { UploadCloud, X, ImageIcon, Trash2, AlertCircle } from 'lucide-react';
 import {
@@ -7,6 +8,7 @@ import {
 } from '../utils/api';
 
 function UploadSection({ user }) {     
+  const navigate = useNavigate();
   const [files, setFiles] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -123,7 +125,13 @@ const handleUpload = async () => {
         const uploadResponse =
             await uploadImages(
                 projectId,
-                formData
+                formData,
+                (progressEvent) => {
+                    if (progressEvent.total) {
+                        const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                        setProgress(percentCompleted);
+                    }
+                }
             );
 
         console.log(
@@ -136,8 +144,12 @@ const handleUpload = async () => {
         setDone(true);
 
         setSuccess(
-            "✅ Project uploaded successfully. Processing started."
+            "✅ Project uploaded successfully. Redirecting to tracking..."
         );
+
+        setTimeout(() => {
+            navigate(`/project/${projectId}/status`);
+        }, 1500);
 
     } catch (err) {
 

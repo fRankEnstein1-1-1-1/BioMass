@@ -564,24 +564,13 @@ async (req, res) => {
         await project.save();
 
         return res.json({
-
             success: true,
-
-            canopyArea:
-                canopyResult
-                    .canopyArea,
-
-            meanHeight:
-                canopyResult
-                    .meanVegetationHeight,
-
-            biomassEstimate:
-                biomassResult
-                    .biomassEstimate,
-
-            carbonEstimate:
-                carbonResult
-                    .carbonEstimate
+            canopyArea: canopyResult.canopyArea,
+            canopyPercentage: canopyResult.canopyPercentage,
+            meanHeight: canopyResult.meanVegetationHeight,
+            maxHeight: canopyResult.maxVegetationHeight,
+            biomassEstimate: biomassResult.biomassEstimate,
+            carbonEstimate: carbonResult.carbonEstimate
         });
 
     } catch (error) {
@@ -598,6 +587,43 @@ async (req, res) => {
     }
 };
 
+const getProjectsByUser = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+
+        const projects = await Project.find({ user: userId }).sort({ createdAt: -1 });
+
+        return res.status(200).json({
+            success: true,
+            projects
+        });
+
+    } catch (error) {
+        console.error("Error fetching user projects:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch projects",
+            error: error.message
+        });
+    }
+};
+
+const deleteProject = async (req, res) => {
+    try {
+        const { projectId } = req.params;
+        const deletedProject = await Project.findByIdAndDelete(projectId);
+        
+        if (!deletedProject) {
+            return res.status(404).json({ success: false, message: "Project not found" });
+        }
+
+        return res.status(200).json({ success: true, message: "Project deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting project:", error);
+        return res.status(500).json({ success: false, message: "Failed to delete project", error: error.message });
+    }
+};
+
 module.exports = {
     createNewProject,
     getProjectStatus,
@@ -605,5 +631,7 @@ module.exports = {
     testGeoTiff,
     generateCHMController,
     testCanopyArea,
-    runEnvironmentalAnalysis
+    runEnvironmentalAnalysis,
+    getProjectsByUser,
+    deleteProject
 };

@@ -3,15 +3,21 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import SignupPage from './pages/SignupPage'
 import HomePage from './pages/HomePage'
+import ProjectStatusPage from './pages/ProjectStatusPage'
+import AnalysisResultsPage from './pages/AnalysisResultsPage'
 
 function App() {
-  const [user, setUser] = useState(null)
-
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('user')
+    return savedUser ? JSON.parse(savedUser) : null
+  })
 
   const handleLogin = (userData) => setUser(userData)
 
-
-  const handleLogout = () => setUser(null)
+  const handleLogout = () => {
+    localStorage.removeItem('user')
+    setUser(null)
+  }
 
   return (
     <BrowserRouter>
@@ -47,6 +53,30 @@ function App() {
     )
   }
 />
+
+        {/* Project Status route */}
+        <Route
+          path="/project/:projectId/status"
+          element={
+            user ? (
+              <ProjectStatusPage user={user} onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+
+        {/* Analysis Results route */}
+        <Route
+          path="/project/:projectId/results"
+          element={
+            user ? (
+              <AnalysisResultsPage user={user} onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
 
         {/* Catch-all */}
         <Route path="*" element={<Navigate to="/" replace />} />

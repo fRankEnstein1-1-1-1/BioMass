@@ -49,6 +49,13 @@ const uploadImages = async (req, res) => {
                 mongoProject.projectName
             );
 
+        if (!webodmProject || !webodmProject.id) {
+            return res.status(500).json({
+                success: false,
+                message: "Failed to communicate with WebODM. Check your WebODM credentials in the .env file."
+            });
+        }
+
     
 
         const task =
