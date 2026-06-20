@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getProjectsByUser, deleteProject } from '../utils/api';
 import { Folder, CheckCircle, Clock, AlertCircle, Loader2, Trash2 } from 'lucide-react';
 
 function ProjectList({ user }) {
+  const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -99,6 +101,7 @@ function ProjectList({ user }) {
             <div 
               key={project._id} 
               className="bg-slate-800/50 hover:bg-slate-800 border border-slate-700 hover:border-slate-600 transition-all rounded-xl p-5 cursor-pointer flex flex-col justify-between"
+              onClick={() => navigate(project.status === 'completed' ? `/project/${project._id}/results` : `/project/${project._id}/status`)}
             >
               <div className="flex justify-between items-start mb-4">
                 <div>

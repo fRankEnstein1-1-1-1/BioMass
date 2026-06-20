@@ -249,6 +249,11 @@ const downloadProjectAssets = async (req, res) => {
             "dtm.tif"
         );
 
+        const orthophotoPath = path.join(
+            assetFolder,
+            "orthophoto.tif"
+        );
+
         console.log("Downloading DSM...");
 
         await downloadAsset(
@@ -267,8 +272,18 @@ const downloadProjectAssets = async (req, res) => {
             dtmPath
         );
 
+        console.log("Downloading orthophoto...");
+
+        await downloadAsset(
+            project.webodmProjectId,
+            project.webodmTaskId,
+            "orthophoto.tif",
+            orthophotoPath
+        );
+
         project.dsmPath = dsmPath;
         project.dtmPath = dtmPath;
+        project.orthophotoUrl = `/assets/${projectId}/orthophoto.tif`;
 
         await project.save();
 
@@ -570,7 +585,8 @@ async (req, res) => {
             meanHeight: canopyResult.meanVegetationHeight,
             maxHeight: canopyResult.maxVegetationHeight,
             biomassEstimate: biomassResult.biomassEstimate,
-            carbonEstimate: carbonResult.carbonEstimate
+            carbonEstimate: carbonResult.carbonEstimate,
+            orthophotoUrl: project.orthophotoUrl
         });
 
     } catch (error) {

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { runEnvironmentalAnalysis } from '../utils/api';
 import Navbar from '../components/Navbar';
 import { Loader2, AlertCircle, Leaf, Activity, TreePine, Wind, ArrowLeft } from 'lucide-react';
+import OrthophotoMap from '../components/OrthophotoMap';
 
 function AnalysisResultsPage({ user, onLogout }) {
   const { projectId } = useParams();
@@ -50,7 +51,7 @@ function AnalysisResultsPage({ user, onLogout }) {
     <div className="min-h-screen bg-[#0f172a] flex flex-col">
       <Navbar user={user} onLogout={onLogout} />
 
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-12 relative">
+      <main className="flex-1 max-w-[1400px] w-full mx-auto px-4 pt-28 pb-12 relative z-10">
         <button 
           onClick={() => navigate('/')} 
           className="mb-8 flex items-center gap-2 text-slate-400 hover:text-white transition-colors"
@@ -80,61 +81,69 @@ function AnalysisResultsPage({ user, onLogout }) {
               <p className="text-slate-400 text-lg">Detailed metrics calculated from your drone imagery.</p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               
-              <MetricCard 
-                title="Total Canopy Area" 
-                value={results.canopyArea?.toLocaleString(undefined, { maximumFractionDigits: 2 }) || '0'} 
-                unit="m²" 
-                icon={Leaf} 
-                colorClass="bg-green-500/20 text-green-400"
-                delay="0ms"
-              />
+              {/* Left Column: Metrics */}
+              <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <MetricCard 
+                  title="Total Canopy Area" 
+                  value={results.canopyArea?.toLocaleString(undefined, { maximumFractionDigits: 2 }) || '0'} 
+                  unit="m²" 
+                  icon={Leaf} 
+                  colorClass="bg-green-500/20 text-green-400"
+                  delay="0ms"
+                />
 
-              <MetricCard 
-                title="Canopy Coverage" 
-                value={results.canopyPercentage?.toLocaleString(undefined, { maximumFractionDigits: 2 }) || '0'} 
-                unit="%" 
-                icon={Leaf} 
-                colorClass="bg-emerald-500/20 text-emerald-400"
-                delay="100ms"
-              />
+                <MetricCard 
+                  title="Canopy Coverage" 
+                  value={results.canopyPercentage?.toLocaleString(undefined, { maximumFractionDigits: 2 }) || '0'} 
+                  unit="%" 
+                  icon={Leaf} 
+                  colorClass="bg-emerald-500/20 text-emerald-400"
+                  delay="100ms"
+                />
 
-              <MetricCard 
-                title="Mean Vegetation Height" 
-                value={results.meanHeight?.toLocaleString(undefined, { maximumFractionDigits: 2 }) || '0'} 
-                unit="m" 
-                icon={Activity} 
-                colorClass="bg-blue-500/20 text-blue-400"
-                delay="200ms"
-              />
+                <MetricCard 
+                  title="Mean Veg Height" 
+                  value={results.meanHeight?.toLocaleString(undefined, { maximumFractionDigits: 2 }) || '0'} 
+                  unit="m" 
+                  icon={Activity} 
+                  colorClass="bg-blue-500/20 text-blue-400"
+                  delay="200ms"
+                />
 
-              <MetricCard 
-                title="Max Vegetation Height" 
-                value={results.maxHeight?.toLocaleString(undefined, { maximumFractionDigits: 2 }) || '0'} 
-                unit="m" 
-                icon={Activity} 
-                colorClass="bg-indigo-500/20 text-indigo-400"
-                delay="300ms"
-              />
+                <MetricCard 
+                  title="Max Veg Height" 
+                  value={results.maxHeight?.toLocaleString(undefined, { maximumFractionDigits: 2 }) || '0'} 
+                  unit="m" 
+                  icon={Activity} 
+                  colorClass="bg-indigo-500/20 text-indigo-400"
+                  delay="300ms"
+                />
 
-              <MetricCard 
-                title="Estimated Biomass" 
-                value={results.biomassEstimate?.toLocaleString(undefined, { maximumFractionDigits: 2 }) || '0'} 
-                unit="tons" 
-                icon={TreePine} 
-                colorClass="bg-orange-500/20 text-orange-400"
-                delay="400ms"
-              />
+                <MetricCard 
+                  title="Estimated Biomass" 
+                  value={results.biomassEstimate?.toLocaleString(undefined, { maximumFractionDigits: 2 }) || '0'} 
+                  unit="tons" 
+                  icon={TreePine} 
+                  colorClass="bg-orange-500/20 text-orange-400"
+                  delay="400ms"
+                />
 
-              <MetricCard 
-                title="Carbon Storage" 
-                value={results.carbonEstimate?.toLocaleString(undefined, { maximumFractionDigits: 2 }) || '0'} 
-                unit="tons" 
-                icon={Wind} 
-                colorClass="bg-teal-500/20 text-teal-400"
-                delay="500ms"
-              />
+                <MetricCard 
+                  title="Carbon Storage" 
+                  value={results.carbonEstimate?.toLocaleString(undefined, { maximumFractionDigits: 2 }) || '0'} 
+                  unit="tons" 
+                  icon={Wind} 
+                  colorClass="bg-teal-500/20 text-teal-400"
+                  delay="500ms"
+                />
+              </div>
+
+              {/* Right Column: Interactive Map */}
+              <div className="lg:col-span-7 fade-in-up h-full min-h-[500px]" style={{ animationDelay: '600ms' }}>
+                <OrthophotoMap orthophotoUrl={results.orthophotoUrl} />
+              </div>
 
             </div>
           </>
