@@ -35,6 +35,12 @@ const {
     "../services/canopyAnalysisSevice"
 );
 
+const {
+    segmentTrees
+} = require(
+    "../services/treeSegmentationService"
+);
+
 const createNewProject = async (req, res) => {
 
     try {
@@ -533,12 +539,14 @@ async (req, res) => {
                 chmResult
             );
 
+        const trees =
+            segmentTrees(
+                chmResult
+            );
+
         const biomassResult =
             estimateBiomass(
-
-                canopyResult.canopyArea,
-
-                canopyResult.meanVegetationHeight
+                trees
             );
 
         const carbonResult =
@@ -572,6 +580,10 @@ async (req, res) => {
             biomassResult
                 .biomassEstimate;
 
+        project.treeCount =
+            biomassResult
+                .treeCount;
+
         project.carbonEstimate =
             carbonResult
                 .carbonEstimate;
@@ -585,6 +597,7 @@ async (req, res) => {
             meanHeight: canopyResult.meanVegetationHeight,
             maxHeight: canopyResult.maxVegetationHeight,
             biomassEstimate: biomassResult.biomassEstimate,
+            treeCount: biomassResult.treeCount,
             carbonEstimate: carbonResult.carbonEstimate,
             orthophotoUrl: project.orthophotoUrl
         });

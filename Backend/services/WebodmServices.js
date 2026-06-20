@@ -113,27 +113,22 @@ const createTask = async (projectId, imageFolderPath) => {
 
     {
         name: "feature-quality",
-        value: "medium"
+        value: "low"
     },
 
     {
         name: "min-num-features",
-        value: 8000
+        value: 6000
     },
 
     {
         name: "pc-quality",
-        value: "low"
+        value: "medium"
     },
 
     {
         name: "skip-3dmodel",
         value: true
-    },
-
-    {
-        name: "mesh-size",
-        value: 200000
     },
 
     {
@@ -164,6 +159,8 @@ const createTask = async (projectId, imageFolderPath) => {
             "options",
             JSON.stringify(options)
         );
+
+        form.append("resize_to", 2048);
 
       
         const response = await axios.post(

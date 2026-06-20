@@ -110,6 +110,11 @@ biomassEstimate: {
     type: Number
 },
 
+treeCount: {
+    type: Number,
+    default: 0
+},
+
 carbonEstimate: {
     type: Number
 }
